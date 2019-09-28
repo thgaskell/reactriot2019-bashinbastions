@@ -18,7 +18,7 @@ afterAll(() => {
   rimraf.sync(testConfigurationFilePath);
 });
 
-test(`modifying the file file`, async () => {
+test(`modifying the file`, async () => {
   // File doesn't exist
   expect(readConfigurationFile(testConfigurationFilePath)).rejects.toThrow(
     `ENOENT: no such file or directory`,
@@ -26,8 +26,8 @@ test(`modifying the file file`, async () => {
 
   // Create a brand new file
   await writeConfigurationFile(
-    testConfigurationFilePath,
     "IdentityFile ~/.ssh/id_rsa",
+    testConfigurationFilePath,
   );
 
   // Read the new file and its content
@@ -37,8 +37,8 @@ test(`modifying the file file`, async () => {
 
   // Overwrite the entire file
   await writeConfigurationFile(
-    testConfigurationFilePath,
     "IdentityFile ~/.ssh/id_rsa_2",
+    testConfigurationFilePath,
   );
 
   const config = (await readConfigurationFile(
@@ -48,7 +48,7 @@ test(`modifying the file file`, async () => {
   expect(config).toEqual("IdentityFile ~/.ssh/id_rsa_2");
 
   // Add a new host to the file
-  const updatedConfig = await addHost(config, {
+  const updatedConfig = addHost(config, {
     host: "host-1",
     hostname: "host-1.example.com",
     user: "user1",

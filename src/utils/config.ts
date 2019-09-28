@@ -20,11 +20,11 @@ export async function readConfigurationFile(
 }
 
 export async function writeConfigurationFile(
+  contents = "",
   filepath: string = path.resolve(
     os.homedir(),
     ".bashnbastions-react-riot-2019/config",
   ),
-  contents = "",
 ) {
   const absoluteFilePath = path.resolve(filepath);
   const directoryPath = path.dirname(absoluteFilePath);
