@@ -2,6 +2,7 @@ import {
   readConfigurationFile,
   writeConfigurationFile,
   getHosts,
+  addHost,
 } from "./config";
 import * as path from "path";
 import * as rimraf from "rimraf";
@@ -31,9 +32,30 @@ test(`creating a file`, async () => {
     "IdentityFile ~/.ssh/id_rsa_2",
   );
 
+  const config = (await readConfigurationFile(
+    testConfigurationFilePath,
+  )).toString();
+
+  expect(config).toEqual("IdentityFile ~/.ssh/id_rsa_2");
+
   expect(
-    (await readConfigurationFile(testConfigurationFilePath)).toString(),
-  ).toEqual("IdentityFile ~/.ssh/id_rsa_2");
+    await addHost(config, {
+      host: "host-1",
+      hostname: "host-1.example.com",
+      user: "user1",
+      port: "22",
+      forwardAgent: "yes",
+      identityFile: "~/.ssh/id_rsa",
+    }),
+  ).toEqual(`IdentityFile ~/.ssh/id_rsa_2
+
+Host host-1
+  Hostname host-1.example.com
+  User user1
+  Port 22
+  ForwardAgent yes
+  IdentityFile ~/.ssh/id_rsa
+`);
 });
 
 test(`parse config file`, () => {

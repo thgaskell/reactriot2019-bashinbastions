@@ -104,6 +104,17 @@ export function getHosts(configurationFile: string): Host[] {
   return hostConfigs;
 }
 
-// function appendHost(configurationFile: string) {
-//   return "";
-// }
+export function addHost(configurationFile: string, host: Host) {
+  const config = parseConfigurationFile(configurationFile);
+  const hostConfig = new SSHConfig();
+  hostConfig.append({
+    Host: host.host,
+    Hostname: host.hostname,
+    User: host.user,
+    Port: host.port,
+    ForwardAgent: host.forwardAgent,
+    IdentityFile: host.identityFile,
+  });
+
+  return `${config}\n\n${SSHConfig.stringify(hostConfig)}`;
+}
