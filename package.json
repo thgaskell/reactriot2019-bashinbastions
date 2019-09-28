@@ -24,6 +24,7 @@
   "peerDependencies": {},
   "dependencies": {
     "ink": "^2.4.0",
+    "meow": "^5.0.0",
     "react": "^16.10.0"
   },
   "devDependencies": {
