@@ -1,17 +1,9 @@
 import React from "react";
 import { Box, Color } from "ink";
-import { readConfigurationFile, getHosts, Host } from "../utils/config";
+import useHosts from "../hooks/useHosts";
 
 export const List: React.FunctionComponent = () => {
-  const [hosts, setHosts] = React.useState<Host[]>([]);
-
-  React.useEffect(() => {
-    async function fetchConfiguration() {
-      const configurationFile = (await readConfigurationFile()).toString();
-      setHosts(getHosts(configurationFile as any));
-    }
-    fetchConfiguration();
-  }, []);
+  const hosts = useHosts();
 
   return (
     <Box flexDirection="column">
