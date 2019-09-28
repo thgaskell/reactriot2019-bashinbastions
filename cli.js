@@ -29,9 +29,4 @@ const cli = meow(
   },
 );
 
-const { input, flags } = cli;
-
-console.log("input: ", input);
-console.log("flags: ", flags);
-
-renderApp();
+renderApp(cli);

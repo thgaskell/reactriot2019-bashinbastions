@@ -42,7 +42,7 @@ interface HostConfiguration {
   config: Array<HostConfig>;
 }
 
-interface Host {
+export interface Host {
   host: string;
   hostname: string;
   user: string;
