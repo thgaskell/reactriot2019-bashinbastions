@@ -1,9 +1,76 @@
-import { readConfigurationFile, getHosts } from "./config";
+import {
+  readConfigurationFile,
+  writeConfigurationFile,
+  getHosts,
+  addHost,
+  removeHost,
+} from "./config";
+import * as path from "path";
+import * as rimraf from "rimraf";
 
-test(`should try to load the default config file`, () => {
-  expect(
-    readConfigurationFile("config/path/that/does/not/exist"),
-  ).rejects.toThrow(`ENOENT: no such file or directory`);
+const testConfigurationFilePath = path.resolve(__dirname, ".tmp/config");
+
+beforeAll(() => {
+  rimraf.sync(testConfigurationFilePath);
+});
+
+afterAll(() => {
+  rimraf.sync(testConfigurationFilePath);
+});
+
+test(`modifying the file`, async () => {
+  // File doesn't exist
+  expect(readConfigurationFile(testConfigurationFilePath)).rejects.toThrow(
+    `ENOENT: no such file or directory`,
+  );
+
+  // Create a brand new file
+  await writeConfigurationFile(
+    "IdentityFile ~/.ssh/id_rsa",
+    testConfigurationFilePath,
+  );
+
+  // Read the new file and its content
+  expect(await readConfigurationFile(testConfigurationFilePath)).toEqual(
+    "IdentityFile ~/.ssh/id_rsa",
+  );
+
+  // Overwrite the entire file
+  await writeConfigurationFile(
+    "IdentityFile ~/.ssh/id_rsa_2",
+    testConfigurationFilePath,
+  );
+
+  const config = (await readConfigurationFile(
+    testConfigurationFilePath,
+  )).toString();
+
+  expect(config).toEqual("IdentityFile ~/.ssh/id_rsa_2");
+
+  // Add a new host to the file
+  const updatedConfig = addHost(config, {
+    host: "host-1",
+    hostname: "host-1.example.com",
+    user: "user1",
+    port: "22",
+    forwardAgent: "yes",
+    identityFile: "~/.ssh/id_rsa",
+  });
+
+  expect(updatedConfig).toEqual(`IdentityFile ~/.ssh/id_rsa_2
+
+Host host-1
+  Hostname host-1.example.com
+  User user1
+  Port 22
+  ForwardAgent yes
+  IdentityFile ~/.ssh/id_rsa
+`);
+
+  // Remove the host from the file
+  expect(removeHost(updatedConfig, "host-1")).toEqual(
+    `IdentityFile ~/.ssh/id_rsa_2`,
+  );
 });
 
 test(`parse config file`, () => {
