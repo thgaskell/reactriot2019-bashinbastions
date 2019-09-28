@@ -6,6 +6,9 @@ import { Disconnect } from "./commands/disconnect";
 import { List } from "./commands/list";
 import { Show } from "./commands/show";
 
+const AppContext = React.createContext<CLI>({});
+export const useAppContext = () => React.useContext(AppContext);
+
 const commands = {
   connect: <Connect />,
   create: <Create />,
@@ -15,17 +18,24 @@ const commands = {
 };
 
 interface CLI {
-  input: string[];
-  flags: { [name: string]: any };
+  input?: string[];
+  flags?: { [name: string]: any };
 }
 
-const App: React.FunctionComponent<CLI> = ({ input }) => {
-  const [command] = input;
+const App: React.FunctionComponent<CLI> = ({ input, flags }) => {
+  const [command] = input!;
 
   return (
-    <Box flexDirection="column">
-      {commands[command as keyof typeof commands]}
-    </Box>
+    <AppContext.Provider
+      value={{
+        input,
+        flags,
+      }}
+    >
+      <Box flexDirection="column">
+        {commands[command as keyof typeof commands]}
+      </Box>
+    </AppContext.Provider>
   );
 };
 
