@@ -5,7 +5,7 @@ const debug = require("debug")("config");
 
 const SSHConfig = require("ssh-config");
 
-const { readFile } = promises;
+const { mkdir, readFile, writeFile } = promises;
 
 export async function readConfigurationFile(
   filepath: string = path.resolve(
@@ -16,6 +16,24 @@ export async function readConfigurationFile(
   const absoluteFilePath = path.resolve(filepath);
   debug(`Reading ssh config file: ${absoluteFilePath}`);
   const config = await readFile(path.resolve(filepath));
+  return config;
+}
+
+export async function writeConfigurationFile(
+  filepath: string = path.resolve(
+    os.homedir(),
+    ".bashnbastions-react-riot-2019/config",
+  ),
+  contents = "",
+) {
+  const absoluteFilePath = path.resolve(filepath);
+  const directoryPath = path.dirname(absoluteFilePath);
+
+  await mkdir(directoryPath, { recursive: true });
+
+  debug(`Writing ssh config file: ${absoluteFilePath}`);
+  const config = await writeFile(path.resolve(filepath), contents);
+
   return config;
 }
 
@@ -85,3 +103,7 @@ export function getHosts(configurationFile: string): Host[] {
 
   return hostConfigs;
 }
+
+// function appendHost(configurationFile: string) {
+//   return "";
+// }

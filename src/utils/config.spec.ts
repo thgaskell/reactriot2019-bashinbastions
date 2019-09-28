@@ -1,9 +1,30 @@
-import { readConfigurationFile, getHosts } from "./config";
+import {
+  readConfigurationFile,
+  writeConfigurationFile,
+  getHosts,
+} from "./config";
+import * as path from "path";
+import * as rimraf from "rimraf";
 
-test(`should try to load the default config file`, () => {
+const testConfigurationFilePath = path.resolve(__dirname, ".tmp/config");
+
+afterAll(() => {
+  rimraf.sync(testConfigurationFilePath);
+});
+
+test(`creating a file`, async () => {
+  expect(readConfigurationFile(testConfigurationFilePath)).rejects.toThrow(
+    `ENOENT: no such file or directory`,
+  );
+
+  await writeConfigurationFile(
+    testConfigurationFilePath,
+    "IdentityFile ~/.ssh/id_rsa",
+  );
+
   expect(
-    readConfigurationFile("config/path/that/does/not/exist"),
-  ).rejects.toThrow(`ENOENT: no such file or directory`);
+    (await readConfigurationFile(testConfigurationFilePath)).toString(),
+  ).toEqual("IdentityFile ~/.ssh/id_rsa");
 });
 
 test(`parse config file`, () => {
