@@ -1,6 +1,6 @@
 import { readConfigurationFile, getHosts } from "./config";
 
-test(`should try to load the default config file`, async () => {
+test(`should try to load the default config file`, () => {
   expect(
     readConfigurationFile("config/path/that/does/not/exist"),
   ).rejects.toThrow(`ENOENT: no such file or directory`);
