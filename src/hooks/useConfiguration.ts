@@ -1,7 +1,7 @@
 import React from "react";
 import { readConfigurationFile } from "../utils/config";
 
-const useConfiguration = () => {
+export const useConfiguration = () => {
   const [configuration, setConfiguration] = React.useState<any>();
 
   React.useEffect(() => {
@@ -14,5 +14,3 @@ const useConfiguration = () => {
 
   return configuration;
 };
-
-export default useConfiguration;

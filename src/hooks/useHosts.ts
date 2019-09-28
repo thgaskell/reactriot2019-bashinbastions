@@ -1,8 +1,8 @@
 import React from "react";
 import { getHosts, Host } from "../utils/config";
-import useConfiguration from "./useConfiguration";
+import { useConfiguration } from "./useConfiguration";
 
-const useHosts = () => {
+export const useHosts = () => {
   const configuration = useConfiguration();
   const [hosts, setHosts] = React.useState<Host[]>([]);
 
@@ -14,5 +14,3 @@ const useHosts = () => {
 
   return hosts;
 };
-
-export default useHosts;
