@@ -1,14 +1,26 @@
 import React from "react";
-import { render, Box, Color } from "ink";
+import { render, Box } from "ink";
+import { List } from "./components";
 
-const App: React.FunctionComponent = () => {
+const commands = {
+  list: <List />,
+};
+
+interface CLI {
+  input: string[];
+  flags: { [name: string]: any };
+}
+
+const App: React.FunctionComponent<CLI> = ({ input }) => {
+  const [command] = input;
+
   return (
-    <Box>
-      Hello <Color green>World</Color>
+    <Box flexDirection="column">
+      {commands[command as keyof typeof commands]}
     </Box>
   );
 };
 
-const renderApp = () => render(<App />);
+const renderApp = (cli: CLI) => render(<App {...cli} />);
 
 export { renderApp };
