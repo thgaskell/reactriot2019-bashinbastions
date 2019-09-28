@@ -15,23 +15,6 @@ export const List: React.FunctionComponent = () => {
               {host.host}
             </Color>
           </Box>
-          <Box marginLeft={4} flexDirection="column">
-            <Box>
-              <Color gray>Hostname:</Color> {host.hostname}
-            </Box>
-            <Box>
-              <Color gray>User:</Color> {host.user}
-            </Box>
-            <Box>
-              <Color gray>Port:</Color> {host.port}
-            </Box>
-            <Box>
-              <Color gray>ForwardAgent:</Color> {host.forwardAgent}
-            </Box>
-            <Box>
-              <Color gray>IdentityFile:</Color> {host.identityFile}
-            </Box>
-          </Box>
         </React.Fragment>
       ))}
     </Box>
