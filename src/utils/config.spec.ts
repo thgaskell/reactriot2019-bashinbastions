@@ -8,7 +8,8 @@ import {
 import * as path from "path";
 import * as rimraf from "rimraf";
 
-const testConfigurationFilePath = path.resolve(__dirname, ".tmp/config");
+const tempdir = path.resolve(__dirname, ".tmp");
+const testConfigurationFilePath = path.resolve(tempdir, "config");
 
 beforeAll(() => {
   rimraf.sync(testConfigurationFilePath);
