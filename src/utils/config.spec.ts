@@ -3,13 +3,11 @@ import { readConfigurationFile, getHosts } from "./config";
 test(`should try to load the default config file`, async () => {
   expect(
     readConfigurationFile("config/path/that/does/not/exist"),
-  ).rejects.toThrow(
-    `ENOENT: no such file or directory, open '/Users/thgaskell/git/reactriot2019-bashinbastions/config/path/that/does/not/exist'`,
-  );
+  ).rejects.toThrow(`ENOENT: no such file or directory`);
 });
 
 test(`parse config file`, () => {
-  const singleConfigContents = `
+  const twoHostConfigContents = `
 IdentityFile ~/.ssh/id_rsa
 
 Host host-1
@@ -26,7 +24,7 @@ Host host-2
   ForwardAgent yes
   IdentityFile ~/.ssh/id_rsa
 `;
-  expect(getHosts(singleConfigContents)).toEqual([
+  expect(getHosts(twoHostConfigContents)).toEqual([
     {
       host: "host-1",
       hostname: "host-1.example.com",
