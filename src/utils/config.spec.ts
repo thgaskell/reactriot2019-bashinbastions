@@ -12,11 +12,11 @@ const tempdir = path.resolve(__dirname, ".tmp");
 const testConfigurationFilePath = path.resolve(tempdir, "config");
 
 beforeAll(() => {
-  rimraf.sync(testConfigurationFilePath);
+  rimraf.sync(tempdir);
 });
 
 afterAll(() => {
-  rimraf.sync(testConfigurationFilePath);
+  rimraf.sync(tempdir);
 });
 
 test(`modifying the file`, async () => {
