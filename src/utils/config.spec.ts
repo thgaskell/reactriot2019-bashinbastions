@@ -25,6 +25,15 @@ test(`creating a file`, async () => {
   expect(
     (await readConfigurationFile(testConfigurationFilePath)).toString(),
   ).toEqual("IdentityFile ~/.ssh/id_rsa");
+
+  await writeConfigurationFile(
+    testConfigurationFilePath,
+    "IdentityFile ~/.ssh/id_rsa_2",
+  );
+
+  expect(
+    (await readConfigurationFile(testConfigurationFilePath)).toString(),
+  ).toEqual("IdentityFile ~/.ssh/id_rsa_2");
 });
 
 test(`parse config file`, () => {
