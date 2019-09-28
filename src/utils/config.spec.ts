@@ -31,9 +31,9 @@ test(`modifying the file`, async () => {
   );
 
   // Read the new file and its content
-  expect(
-    (await readConfigurationFile(testConfigurationFilePath)).toString(),
-  ).toEqual("IdentityFile ~/.ssh/id_rsa");
+  expect(await readConfigurationFile(testConfigurationFilePath)).toEqual(
+    "IdentityFile ~/.ssh/id_rsa",
+  );
 
   // Overwrite the entire file
   await writeConfigurationFile(

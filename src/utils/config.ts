@@ -16,7 +16,7 @@ export async function readConfigurationFile(
   const absoluteFilePath = path.resolve(filepath);
   debug(`Reading ssh config file: ${absoluteFilePath}`);
   const config = await readFile(path.resolve(filepath));
-  return config;
+  return config.toString();
 }
 
 export async function writeConfigurationFile(
