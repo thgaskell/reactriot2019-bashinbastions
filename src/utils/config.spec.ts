@@ -3,6 +3,7 @@ import {
   writeConfigurationFile,
   getHosts,
   addHost,
+  removeHost,
 } from "./config";
 import * as path from "path";
 import * as rimraf from "rimraf";
@@ -38,16 +39,16 @@ test(`creating a file`, async () => {
 
   expect(config).toEqual("IdentityFile ~/.ssh/id_rsa_2");
 
-  expect(
-    await addHost(config, {
-      host: "host-1",
-      hostname: "host-1.example.com",
-      user: "user1",
-      port: "22",
-      forwardAgent: "yes",
-      identityFile: "~/.ssh/id_rsa",
-    }),
-  ).toEqual(`IdentityFile ~/.ssh/id_rsa_2
+  const updatedConfig = await addHost(config, {
+    host: "host-1",
+    hostname: "host-1.example.com",
+    user: "user1",
+    port: "22",
+    forwardAgent: "yes",
+    identityFile: "~/.ssh/id_rsa",
+  });
+
+  expect(updatedConfig).toEqual(`IdentityFile ~/.ssh/id_rsa_2
 
 Host host-1
   Hostname host-1.example.com
@@ -56,6 +57,10 @@ Host host-1
   ForwardAgent yes
   IdentityFile ~/.ssh/id_rsa
 `);
+
+  expect(removeHost(updatedConfig, "host-1")).toEqual(
+    `IdentityFile ~/.ssh/id_rsa_2`,
+  );
 });
 
 test(`parse config file`, () => {

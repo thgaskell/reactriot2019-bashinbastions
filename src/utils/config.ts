@@ -118,3 +118,10 @@ export function addHost(configurationFile: string, host: Host) {
 
   return `${config}\n\n${SSHConfig.stringify(hostConfig)}`;
 }
+
+export function removeHost(configurationFile: string, host: string) {
+  const config = parseConfigurationFile(configurationFile);
+  config.remove({ Host: host });
+
+  return SSHConfig.stringify(config).trim();
+}
