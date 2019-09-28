@@ -1,6 +1,6 @@
 import React from "react";
 import { render, Box } from "ink";
-import { List } from "./components";
+import { List } from "./commands/list";
 
 const commands = {
   list: <List />,
