@@ -10,24 +10,32 @@ import * as rimraf from "rimraf";
 
 const testConfigurationFilePath = path.resolve(__dirname, ".tmp/config");
 
+beforeAll(() => {
+  rimraf.sync(testConfigurationFilePath);
+});
+
 afterAll(() => {
   rimraf.sync(testConfigurationFilePath);
 });
 
-test(`creating a file`, async () => {
+test(`modifying the file file`, async () => {
+  // File doesn't exist
   expect(readConfigurationFile(testConfigurationFilePath)).rejects.toThrow(
     `ENOENT: no such file or directory`,
   );
 
+  // Create a brand new file
   await writeConfigurationFile(
     testConfigurationFilePath,
     "IdentityFile ~/.ssh/id_rsa",
   );
 
+  // Read the new file and its content
   expect(
     (await readConfigurationFile(testConfigurationFilePath)).toString(),
   ).toEqual("IdentityFile ~/.ssh/id_rsa");
 
+  // Overwrite the entire file
   await writeConfigurationFile(
     testConfigurationFilePath,
     "IdentityFile ~/.ssh/id_rsa_2",
@@ -39,6 +47,7 @@ test(`creating a file`, async () => {
 
   expect(config).toEqual("IdentityFile ~/.ssh/id_rsa_2");
 
+  // Add a new host to the file
   const updatedConfig = await addHost(config, {
     host: "host-1",
     hostname: "host-1.example.com",
@@ -58,6 +67,7 @@ Host host-1
   IdentityFile ~/.ssh/id_rsa
 `);
 
+  // Remove the host from the file
   expect(removeHost(updatedConfig, "host-1")).toEqual(
     `IdentityFile ~/.ssh/id_rsa_2`,
   );
