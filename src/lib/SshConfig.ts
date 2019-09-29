@@ -181,6 +181,21 @@ ${tunnelConfigs}
     return this.hosts;
   }
 
+  public addHost(input: IHost) {
+    const host = new Host({
+      Host: input.Host,
+      HostName: input.HostName,
+      Port: input.Port,
+      User: input.User,
+      ForwardAgent: input.ForwardAgent,
+      IdentityFile: input.IdentityFile,
+    });
+
+    this.hosts.push(host);
+
+    return host;
+  }
+
   public getTunnels() {
     return this.tunnels;
   }
@@ -272,12 +287,12 @@ class Tunnel {
       );
     }
 
-    const [, port, host, hostPort] = results;
-
-    debug(`Running: ssh -N -L ${port}:${host}:${hostPort} ${this.HostName}`);
+    debug(
+      `Running: ssh -F ${SshConfig.CLI_SSH_CONFIG_FILEPATH} -N ${this.Host}`,
+    );
     const child = spawn(
       "ssh",
-      ["-N", "-L", `${port}:${host}:${hostPort}`, this.HostName],
+      ["-F", SshConfig.CLI_SSH_CONFIG_FILEPATH, "-N", this.Host],
       {},
     );
 

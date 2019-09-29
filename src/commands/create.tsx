@@ -6,6 +6,132 @@ import SshConfig from "../lib/SshConfig";
 import { useAppContext } from "../hooks/useAppContext";
 import { useConfiguration } from "../hooks/useConfiguration";
 
+const CreateHost: React.FunctionComponent = () => {
+  const [step, setStep] = React.useState(0);
+  const [host, setHost] = React.useState("");
+  const [hostName, setHostName] = React.useState("");
+  const [user, setUser] = React.useState("");
+  const [port, setPort] = React.useState("22");
+  const [forwardAgent, setForwardAgent] = React.useState("yes");
+  const [identityFile, setIdentityFile] = React.useState("~/.ssh/id_rsa");
+  const { config } = useConfiguration();
+
+  return (
+    <Box flexDirection="column">
+      <Box>
+        <Text bold>
+          Host:{" "}
+          {step === 0 ? (
+            <TextInput
+              value={host}
+              onChange={value => setHost(value)}
+              onSubmit={() => setStep(1)}
+            />
+          ) : (
+            <Color green>{host}</Color>
+          )}
+        </Text>
+      </Box>
+      {step >= 1 && (
+        <Box>
+          <Text bold>
+            HostName:{" "}
+            {step === 1 ? (
+              <TextInput
+                value={hostName}
+                onChange={value => setHostName(value)}
+                onSubmit={() => setStep(2)}
+              />
+            ) : (
+              <Color green>{hostName}</Color>
+            )}
+          </Text>
+        </Box>
+      )}
+      {step >= 2 && (
+        <Box>
+          <Text bold>
+            User:{" "}
+            {step === 2 ? (
+              <TextInput
+                value={user}
+                onChange={value => setUser(value)}
+                onSubmit={() => setStep(3)}
+              />
+            ) : (
+              <Color green>{user}</Color>
+            )}
+          </Text>
+        </Box>
+      )}
+      {step >= 3 && (
+        <Box>
+          <Text bold>
+            Port:{" "}
+            {step === 3 ? (
+              <TextInput
+                value={port}
+                onChange={value => setPort(value)}
+                onSubmit={() => setStep(4)}
+              />
+            ) : (
+              <Color green>{port}</Color>
+            )}
+          </Text>
+        </Box>
+      )}
+      {step >= 4 && (
+        <Box>
+          <Text bold>
+            ForwardAgent:{" "}
+            {step === 4 ? (
+              <TextInput
+                value={forwardAgent}
+                onChange={value => setForwardAgent(value)}
+                onSubmit={() => setStep(5)}
+              />
+            ) : (
+              <Color green>{forwardAgent}</Color>
+            )}
+          </Text>
+        </Box>
+      )}
+      {step >= 5 && (
+        <Box>
+          <Text bold>
+            IdentityFile:{" "}
+            {step === 5 ? (
+              <TextInput
+                value={identityFile}
+                onChange={value => setIdentityFile(value)}
+                onSubmit={async () => {
+                  config.addHost({
+                    Host: host,
+                    HostName: hostName,
+                    User: user,
+                    Port: port,
+                    ForwardAgent: forwardAgent,
+                    IdentityFile: identityFile,
+                  });
+                  await SshConfig.save(config);
+                  setStep(6);
+                }}
+              />
+            ) : (
+              <Color green>{identityFile}</Color>
+            )}
+          </Text>
+        </Box>
+      )}
+      {step >= 6 && (
+        <Box>
+          Please run `<Text bold>cli list</Text>` to list available hosts.
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 const CreateTunnel: React.FunctionComponent = () => {
   const [step, setStep] = React.useState(0);
   const [host, setHost] = React.useState<any>();
@@ -125,6 +251,7 @@ const CreateTunnel: React.FunctionComponent = () => {
 
 const creates = {
   tunnel: <CreateTunnel />,
+  host: <CreateHost />,
 };
 
 export const Create: React.FunctionComponent = () => {

@@ -1,11 +1,10 @@
-const { promises } = require("fs");
 const path = require("path");
 const os = require("os");
 const debug = require("debug")("config");
 
 const SSHConfig = require("ssh-config");
 
-const { mkdir, readFile, writeFile } = promises;
+const { mkdir, readFile, writeFile } = require("mz/fs");
 
 export async function readConfigurationFile(
   filepath: string = path.resolve(

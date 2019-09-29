@@ -7,11 +7,12 @@ export const Connect: React.FunctionComponent = () => {
   //@ts-ignore
   const { config, isLoading, error } = useConfiguration();
 
-  const hosts = config.getTunnels();
+  const tunnels = config.getTunnels();
 
-  const items = hosts.map(({ Host }) => ({
-    label: Host,
-    value: Host,
+  const items = tunnels.map(tunnel => ({
+    label: tunnel.Host,
+    value: tunnel.Host,
+    tunnel: tunnel,
   }));
 
   if (!items.length) return null;
@@ -23,8 +24,10 @@ export const Connect: React.FunctionComponent = () => {
       </Box>
       <SelectInput
         items={items}
-        onSelect={item => {
-          console.log("Connect -> item", item);
+        onSelect={(item: any) => {
+          const { tunnel } = item;
+
+          tunnel.connect();
           process.exit(0);
         }}
       />
