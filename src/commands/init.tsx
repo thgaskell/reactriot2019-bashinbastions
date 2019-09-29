@@ -13,6 +13,8 @@ export const Init: React.FunctionComponent = () => {
     async function initConfig() {
       try {
         await SshConfig.import(config, USER_HOME_SSH_CONFIG_FILEPATH);
+        await config.load();
+        await SshConfig.save(config);
 
         setConfig(config);
         setLoading(false);
