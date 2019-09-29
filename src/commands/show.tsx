@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Color } from "ink";
 import { useHosts } from "../hooks/useHosts";
-import { useAppContext } from "../index";
+import { useAppContext } from "../hooks/useAppContext";
 
 export const Show: React.FunctionComponent = () => {
   const { input } = useAppContext();

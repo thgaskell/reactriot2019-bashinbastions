@@ -1,15 +1,13 @@
 const debug = require("debug")("cli");
 import React from "react";
 import { render, Box } from "ink";
+import { AppContext } from "./hooks/useAppContext";
 import { Connect } from "./commands/connect";
 import { Create } from "./commands/create";
 import { Disconnect } from "./commands/disconnect";
 import { List } from "./commands/list";
 import { Show } from "./commands/show";
 import { Init } from "./commands/init";
-
-const AppContext = React.createContext<CLI>({} as any);
-export const useAppContext = () => React.useContext(AppContext);
 
 const commands = {
   connect: <Connect />,
@@ -20,7 +18,7 @@ const commands = {
   init: <Init />,
 };
 
-interface CLI {
+export interface CLI {
   input: string[];
   flags: { [name: string]: any };
 }
