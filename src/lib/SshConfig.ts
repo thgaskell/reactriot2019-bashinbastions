@@ -29,7 +29,6 @@ export default class SshConfig {
 
   private directory: string;
   public filepath: string;
-  //@ts-ignore
   private hosts: Host[];
 
   private constructor(args: { directory: string }) {
@@ -101,6 +100,10 @@ export default class SshConfig {
     await copyFile(resolvedFromFilepath, configFilepath);
 
     return;
+  }
+
+  public getHosts() {
+    return this.hosts;
   }
 }
 
