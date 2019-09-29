@@ -50,12 +50,12 @@ test(`modifying the file`, async () => {
 
   // Add a new host to the file
   const updatedConfig = addHost(config, {
-    host: "host-1",
-    hostname: "host-1.example.com",
-    user: "user1",
-    port: "22",
-    forwardAgent: "yes",
-    identityFile: "~/.ssh/id_rsa",
+    Host: "host-1",
+    HostName: "host-1.example.com",
+    User: "user1",
+    Port: "22",
+    ForwardAgent: "yes",
+    IdentityFile: "~/.ssh/id_rsa",
   });
 
   expect(updatedConfig).toEqual(`IdentityFile ~/.ssh/id_rsa_2
@@ -94,20 +94,20 @@ Host host-2
 `;
   expect(getHosts(twoHostConfigContents)).toEqual([
     {
-      host: "host-1",
-      hostname: "host-1.example.com",
-      user: "user1",
-      port: "22",
-      forwardAgent: "yes",
-      identityFile: "~/.ssh/id_rsa",
+      Host: "host-1",
+      HostName: "host-1.example.com",
+      User: "user1",
+      Port: "22",
+      ForwardAgent: "yes",
+      IdentityFile: "~/.ssh/id_rsa",
     },
     {
-      host: "host-2",
-      hostname: "host-2.example.com",
-      user: "user2",
-      port: "22",
-      forwardAgent: "yes",
-      identityFile: "~/.ssh/id_rsa",
+      Host: "host-2",
+      HostName: "host-2.example.com",
+      User: "user2",
+      Port: "22",
+      ForwardAgent: "yes",
+      IdentityFile: "~/.ssh/id_rsa",
     },
   ]);
 });

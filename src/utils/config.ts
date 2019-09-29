@@ -10,7 +10,7 @@ const { mkdir, readFile, writeFile } = promises;
 export async function readConfigurationFile(
   filepath: string = path.resolve(
     os.homedir(),
-    ".bashnbastions-react-riot-2019/config",
+    ".bashnbastions-react-riot-2019/.ssh/config",
   ),
 ) {
   const absoluteFilePath = path.resolve(filepath);
@@ -23,7 +23,7 @@ export async function writeConfigurationFile(
   contents = "",
   filepath: string = path.resolve(
     os.homedir(),
-    ".bashnbastions-react-riot-2019/config",
+    ".bashnbastions-react-riot-2019/.ssh/config",
   ),
 ) {
   const absoluteFilePath = path.resolve(filepath);
@@ -50,7 +50,7 @@ interface IdentityFileConfiguration {
 }
 
 interface HostConfig {
-  param: "Hostname" | "User" | "Port" | "ForwardAgent" | "IdentityFile";
+  param: "HostName" | "User" | "Port" | "ForwardAgent" | "IdentityFile";
   value: string;
 }
 
@@ -60,60 +60,67 @@ interface HostConfiguration {
   config: Array<HostConfig>;
 }
 
-export interface Host {
-  host: string;
-  hostname: string;
-  user: string;
-  port: string;
-  forwardAgent: string;
-  identityFile: string;
-}
-
 export function isHostConfiguration(
   config: SSHConfiguration,
 ): config is HostConfiguration {
   return config.param === "Host";
 }
 
-export function getHosts(configurationFile: string): Host[] {
+export function getHosts(configurationFile: string) {
   const parsedConfig: Array<SSHConfiguration> = parseConfigurationFile(
     configurationFile,
   );
   const hostConfigs = parsedConfig
     .filter(isHostConfiguration)
     .map((host: HostConfiguration) => {
-      const hostname = host.config.find(config => config.param === "Hostname");
-      const user = host.config.find(config => config.param === "User");
-      const port = host.config.find(config => config.param === "Port");
-      const forwardAgent = host.config.find(
-        config => config.param === "ForwardAgent",
-      );
-      const identityFile = host.config.find(
-        config => config.param === "IdentityFile",
-      );
+      const Host = host.value || "";
+      const HostName = host.config.find(config =>
+        /HostName/i.test(config.param),
+      ) || { value: "" };
+      const User = host.config.find(config => /User/i.test(config.param)) || {
+        value: "",
+      };
+      const Port = host.config.find(config => /Port/i.test(config.param)) || {
+        value: "",
+      };
+      const ForwardAgent = host.config.find(config =>
+        /forwardagent/i.test(config.param),
+      ) || { value: "" };
+      const IdentityFile = host.config.find(config =>
+        /IdentityFile/i.test(config.param),
+      ) || { value: "" };
       return {
-        host: host.value,
-        hostname: (hostname && hostname.value) || "",
-        user: (user && user.value) || "",
-        port: (port && port.value) || "",
-        forwardAgent: (forwardAgent && forwardAgent.value) || "",
-        identityFile: (identityFile && identityFile.value) || "",
+        Host: Host,
+        HostName: HostName.value,
+        User: User.value,
+        Port: Port.value,
+        ForwardAgent: ForwardAgent.value,
+        IdentityFile: IdentityFile.value,
       };
     });
 
   return hostConfigs;
 }
 
-export function addHost(configurationFile: string, host: Host) {
+interface IHost {
+  Host: string;
+  HostName: string;
+  User: string;
+  Port: string;
+  ForwardAgent: string;
+  IdentityFile: string;
+}
+
+export function addHost(configurationFile: string, host: IHost) {
   const config = parseConfigurationFile(configurationFile);
   const hostConfig = new SSHConfig();
   hostConfig.append({
-    Host: host.host,
-    Hostname: host.hostname,
-    User: host.user,
-    Port: host.port,
-    ForwardAgent: host.forwardAgent,
-    IdentityFile: host.identityFile,
+    Host: host.Host,
+    Hostname: host.HostName,
+    User: host.User,
+    Port: host.Port,
+    ForwardAgent: host.ForwardAgent,
+    IdentityFile: host.IdentityFile,
   });
 
   return `${config}\n\n${SSHConfig.stringify(hostConfig)}`;

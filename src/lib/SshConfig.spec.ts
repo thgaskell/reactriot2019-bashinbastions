@@ -7,13 +7,15 @@ import { readFile, appendFile, writeFile, readdir } from "mz/fs";
 const TEST_CLI_DIRECTORY = path.resolve(__dirname, "..", "..", "test", ".tmp");
 describe("SSH Config", () => {
   describe("init", () => {
-    it("should have a default directory", () => {
-      expect(SshConfig.init()).toMatchObject({
+    it("should have a default directory", async () => {
+      expect(await SshConfig.init()).toMatchObject({
         directory: SshConfig.DEFAULT_CLI_DIRECTORY,
       });
     });
-    it("should have a custom directory", () => {
-      expect(SshConfig.init({ directory: TEST_CLI_DIRECTORY })).toMatchObject({
+    it("should have a custom directory", async () => {
+      expect(
+        await SshConfig.init({ directory: TEST_CLI_DIRECTORY }),
+      ).toMatchObject({
         directory: TEST_CLI_DIRECTORY,
       });
     });
@@ -52,7 +54,7 @@ describe("SSH Config", () => {
     });
 
     it("should attempt to import ssh config file", async () => {
-      const config = SshConfig.init({ directory: TEST_CLI_DIRECTORY });
+      const config = await SshConfig.init({ directory: TEST_CLI_DIRECTORY });
 
       const INVALID_IMPORT_TARGET = path.resolve(
         __dirname,

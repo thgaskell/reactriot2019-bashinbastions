@@ -1,10 +1,10 @@
 import React from "react";
-import { getHosts, Host } from "../utils/config";
+import { getHosts } from "../utils/config";
 import { useConfiguration } from "./useConfiguration";
 
 export const useHosts = () => {
   const configuration = useConfiguration();
-  const [hosts, setHosts] = React.useState<Host[]>([]);
+  const [hosts, setHosts] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     if (configuration) {

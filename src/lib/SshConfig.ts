@@ -3,6 +3,9 @@ const debug = require("debug")("ssh-config");
 
 import os from "os";
 import path from "path";
+import untildify from "untildify";
+
+import { readConfigurationFile, getHosts } from "../utils/config";
 
 //@ts-ignore
 import { copyFile, exists, mkdir, readFile, writeFile } from "mz/fs";
@@ -26,12 +29,14 @@ export default class SshConfig {
 
   private directory: string;
   public filepath: string;
+  private hosts: Host[];
 
   private constructor(args: { directory: string }) {
     const { directory } = args;
 
     this.directory = directory;
     this.filepath = path.resolve(this.directory, ".ssh", "config");
+    this.hosts = [];
   }
 
   private static isValidSSHConfigString(content: string) {
@@ -39,18 +44,24 @@ export default class SshConfig {
     return typeof content === "string";
   }
 
-  public static init(
+  public static async init(
     args: { directory: string } = {
       directory: SshConfig.DEFAULT_CLI_DIRECTORY,
     },
   ) {
     let directory = path.resolve(args.directory);
 
-    return new SshConfig({ directory });
+    const config = new SshConfig({ directory });
+
+    if (await exists(config.filepath)) {
+      config.hosts = getHosts(await readConfigurationFile(config.filepath));
+    }
+
+    return config;
   }
 
   public async import(fromFilepath: string) {
-    let resolvedFromFilepath = path.resolve(fromFilepath);
+    let resolvedFromFilepath = path.resolve(untildify(fromFilepath));
 
     debug(`Checking if import file exists: ${resolvedFromFilepath}`);
     if (!(await exists(resolvedFromFilepath))) {
@@ -89,5 +100,36 @@ export default class SshConfig {
     await copyFile(resolvedFromFilepath, configFilepath);
 
     return;
+  }
+
+  public getHosts() {
+    return this.hosts;
+  }
+}
+
+interface IHost {
+  Host: string;
+  HostName: string;
+  User: string;
+  Port: string;
+  ForwardAgent: string;
+  IdentityFile: string;
+}
+
+type HostArguments = IHost;
+
+class Host {
+  public readonly Host: string;
+  public readonly HostName: string;
+  public readonly User: string;
+  public readonly Port: string;
+  public readonly ForwardAgent: string;
+
+  constructor(args: HostArguments) {
+    this.Host = args.Host;
+    this.HostName = args.HostName;
+    this.User = args.User;
+    this.Port = args.Port;
+    this.ForwardAgent = args.ForwardAgent;
   }
 }
