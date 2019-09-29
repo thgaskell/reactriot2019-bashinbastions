@@ -25,6 +25,7 @@
   "dependencies": {
     "debug": "4.1.1",
     "ink": "^2.4.0",
+    "ink-select-input": "^3.1.2",
     "meow": "^5.0.0",
     "mz": "2.7.0",
     "react": "^16.10.0",
