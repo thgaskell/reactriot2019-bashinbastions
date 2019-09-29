@@ -20,21 +20,14 @@ export const Show: React.FunctionComponent = () => {
             </Color>
           </Box>
           <Box marginLeft={2} flexDirection="column">
-            <Box>
-              <Color gray>HostName:</Color> {data.HostName}
-            </Box>
-            <Box>
-              <Color gray>User:</Color> {data.User}
-            </Box>
-            <Box>
-              <Color gray>Port:</Color> {data.Port}
-            </Box>
-            <Box>
-              <Color gray>ForwardAgent:</Color> {data.ForwardAgent}
-            </Box>
-            <Box>
-              <Color gray>IdentityFile:</Color> {data.IdentityFile}
-            </Box>
+            {Object.entries(data).map(([key, value]) => {
+              if (key === "Host" || !value) return;
+              return (
+                <Box key={key}>
+                  <Color gray>{key}:</Color> {value}
+                </Box>
+              );
+            })}
           </Box>
         </React.Fragment>
       )}
