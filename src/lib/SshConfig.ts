@@ -3,6 +3,7 @@ const debug = require("debug")("ssh-config");
 
 import os from "os";
 import path from "path";
+import untildify from "untildify";
 
 //@ts-ignore
 import { copyFile, exists, mkdir, readFile, writeFile } from "mz/fs";
@@ -50,7 +51,7 @@ export default class SshConfig {
   }
 
   public async import(fromFilepath: string) {
-    let resolvedFromFilepath = path.resolve(fromFilepath);
+    let resolvedFromFilepath = path.resolve(untildify(fromFilepath));
 
     debug(`Checking if import file exists: ${resolvedFromFilepath}`);
     if (!(await exists(resolvedFromFilepath))) {
