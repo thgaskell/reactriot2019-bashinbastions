@@ -122,6 +122,29 @@ export default class SshConfig {
   public getTunnels() {
     return this.tunnels;
   }
+
+  public addTunnel(
+    host: IHost,
+    input: {
+      host: string;
+      port: string;
+      remotePort: string;
+      remoteHost: string;
+    },
+  ) {
+    const tunnel = new Tunnel({
+      Host: input.host,
+      HostName: host.HostName,
+      Port: host.Port,
+      User: host.User,
+      LocalForward: `${input.port} ${input.remoteHost}:${input.remotePort}`,
+      IdentityFile: host.IdentityFile,
+    });
+
+    this.tunnels.push(tunnel);
+
+    return tunnel;
+  }
 }
 
 interface IHost {
