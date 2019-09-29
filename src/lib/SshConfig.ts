@@ -115,16 +115,30 @@ export default class SshConfig {
     return;
   }
 
+  private static constructConfigString(param: string, value: string) {
+    if (value) {
+      return `\n  ${param} ${value}`;
+    }
+    return "";
+  }
+
   public static async save(config: SshConfig) {
     const hostConfigs = config.hosts
       .map(
         host => `
-Host ${host.Host}
-  HostName ${host.HostName}
-  User ${host.User}
-  Port ${host.Port}
-  ForwardAgent ${host.ForwardAgent}
-  IdentityFile ${host.IdentityFile}
+Host ${host.Host}${SshConfig.constructConfigString(
+          "HostName",
+          host.HostName,
+        )}${SshConfig.constructConfigString(
+          "User",
+          host.User,
+        )}${SshConfig.constructConfigString(
+          "Port",
+          host.Port,
+        )}${SshConfig.constructConfigString(
+          "ForwardAgent",
+          host.ForwardAgent,
+        )}${SshConfig.constructConfigString("IdentityFile", host.IdentityFile)}
  `,
       )
       .join("");
@@ -132,12 +146,22 @@ Host ${host.Host}
     const tunnelConfigs = config.tunnels
       .map(
         tunnel => `
-Host ${tunnel.Host}
-  HostName ${tunnel.HostName}
-  User ${tunnel.User}
-  Port ${tunnel.Port}
-  LocalForward ${tunnel.LocalForward}
-  IdentityFile ${tunnel.IdentityFile}
+Host ${tunnel.Host}${SshConfig.constructConfigString(
+          "HostName",
+          tunnel.HostName,
+        )}${SshConfig.constructConfigString(
+          "User",
+          tunnel.User,
+        )}${SshConfig.constructConfigString(
+          "Port",
+          tunnel.Port,
+        )}${SshConfig.constructConfigString(
+          "LocalForward",
+          tunnel.LocalForward,
+        )}${SshConfig.constructConfigString(
+          "IdentityFile",
+          tunnel.IdentityFile,
+        )}
  `,
       )
       .join("");

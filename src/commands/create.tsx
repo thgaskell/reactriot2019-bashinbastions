@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Text, Color } from "ink";
 import SelectInput from "ink-select-input";
 import TextInput from "ink-text-input";
+import SshConfig from "../lib/SshConfig";
 import { useAppContext } from "../hooks/useAppContext";
 import { useConfiguration } from "../hooks/useConfiguration";
 
@@ -35,7 +36,6 @@ const CreateTunnel: React.FunctionComponent = () => {
           items={items}
           onSelect={item => {
             setHost(item);
-            // console.log("Connect -> item", item);
             setStep(1);
           }}
         />
@@ -96,7 +96,14 @@ const CreateTunnel: React.FunctionComponent = () => {
               <TextInput
                 value={remotePort}
                 onChange={value => setRemotePort(value)}
-                onSubmit={() => {
+                onSubmit={async () => {
+                  config.addTunnel(host, {
+                    host: name,
+                    port: localPort,
+                    remoteHost,
+                    remotePort,
+                  });
+                  await SshConfig.save(config);
                   setStep(5);
                 }}
               />
@@ -106,7 +113,7 @@ const CreateTunnel: React.FunctionComponent = () => {
           </Text>
         </Box>
       )}
-      {step > 4 && (
+      {step >= 5 && (
         <Box>
           Please run `<Text bold>cli connect</Text>` to connect to start the
           tunnel
