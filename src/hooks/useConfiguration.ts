@@ -1,16 +1,26 @@
 import React from "react";
-import { readConfigurationFile } from "../utils/config";
+import SshConfig from "../lib/SshConfig";
 
 export const useConfiguration = () => {
-  const [configuration, setConfiguration] = React.useState<any>();
+  const [isLoading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [config, setConfig] = React.useState<SshConfig>(new SshConfig());
 
   React.useEffect(() => {
-    async function fetchConfiguration() {
-      const configurationFile = (await readConfigurationFile()).toString();
-      setConfiguration(configurationFile);
+    async function loadConfig() {
+      try {
+        await config.load();
+
+        setLoading(false);
+        setConfig(config);
+      } catch (err) {
+        setLoading(false);
+        setError(err);
+        process.exit(1);
+      }
     }
-    fetchConfiguration();
+    loadConfig();
   }, []);
 
-  return configuration;
+  return { config, isLoading, error };
 };

@@ -1,12 +1,14 @@
 import React from "react";
 import { Box, Color } from "ink";
-import { useHosts } from "../hooks/useHosts";
+import { useConfiguration } from "../hooks/useConfiguration";
 import { useAppContext } from "../hooks/useAppContext";
 
 export const Show: React.FunctionComponent = () => {
   const { input } = useAppContext();
   const [, host] = input;
-  const hosts = useHosts();
+  //@ts-ignore
+  const { config, isLoading, error } = useConfiguration();
+  const hosts = config.getHosts();
   const data = hosts.find(h => h.Host === host);
 
   return (

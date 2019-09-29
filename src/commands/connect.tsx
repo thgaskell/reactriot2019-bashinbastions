@@ -1,10 +1,14 @@
 import React from "react";
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
-import { useHosts } from "../hooks/useHosts";
+import { useConfiguration } from "../hooks/useConfiguration";
 
 export const Connect: React.FunctionComponent = () => {
-  const hosts = useHosts();
+  //@ts-ignore
+  const { config, isLoading, error } = useConfiguration();
+
+  const hosts = config.getTunnels();
+
   const items = hosts.map(({ Host }) => ({
     label: Host,
     value: Host,

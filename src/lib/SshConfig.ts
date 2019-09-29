@@ -1,11 +1,12 @@
-//@ts-ignore
 const debug = require("debug")("ssh-config");
 
+const ps = require("ps-node");
 import os from "os";
 import path from "path";
 import untildify from "untildify";
+import { spawn, ChildProcessWithoutNullStreams } from "child_process";
 
-import { readConfigurationFile, getHosts } from "../utils/config";
+import { readConfigurationFile, getHosts, getTunnels } from "../utils/config";
 
 //@ts-ignore
 import { copyFile, exists, mkdir, readFile, writeFile } from "mz/fs";
@@ -30,13 +31,27 @@ export default class SshConfig {
   private directory: string;
   public filepath: string;
   private hosts: Host[];
+  private tunnels: Tunnel[];
 
-  private constructor(args: { directory: string }) {
+  constructor(
+    args: { directory: string } = {
+      directory: SshConfig.DEFAULT_CLI_DIRECTORY,
+    },
+  ) {
     const { directory } = args;
 
     this.directory = directory;
     this.filepath = path.resolve(this.directory, ".ssh", "config");
     this.hosts = [];
+    this.tunnels = [];
+  }
+
+  public async load() {
+    if (await exists(this.filepath)) {
+      const config = await readConfigurationFile(this.filepath);
+      this.hosts = getHosts(config);
+      this.tunnels = getTunnels(config).map(config => new Tunnel(config));
+    }
   }
 
   private static isValidSSHConfigString(content: string) {
@@ -53,14 +68,12 @@ export default class SshConfig {
 
     const config = new SshConfig({ directory });
 
-    if (await exists(config.filepath)) {
-      config.hosts = getHosts(await readConfigurationFile(config.filepath));
-    }
+    await config.load();
 
     return config;
   }
 
-  public async import(fromFilepath: string) {
+  public static async import(config: SshConfig, fromFilepath: string) {
     let resolvedFromFilepath = path.resolve(untildify(fromFilepath));
 
     debug(`Checking if import file exists: ${resolvedFromFilepath}`);
@@ -77,7 +90,7 @@ export default class SshConfig {
       throw new Error(`Invalid configuration file format.`);
     }
 
-    const configFilepath = this.filepath;
+    const configFilepath = config.filepath;
     if (await exists(configFilepath)) {
       const snapshotFilepath = path.resolve(
         path.dirname(configFilepath),
@@ -104,6 +117,10 @@ export default class SshConfig {
 
   public getHosts() {
     return this.hosts;
+  }
+
+  public getTunnels() {
+    return this.tunnels;
   }
 }
 
@@ -132,4 +149,100 @@ class Host {
     this.Port = args.Port;
     this.ForwardAgent = args.ForwardAgent;
   }
+}
+
+type TunnelArguments = ITunnel;
+
+class Tunnel {
+  public readonly Host: string;
+  public readonly HostName: string;
+  public readonly LocalForward: string;
+  public connection: ChildProcessWithoutNullStreams | null;
+
+  constructor(args: TunnelArguments) {
+    this.Host = args.Host;
+    this.HostName = args.HostName;
+    this.LocalForward = args.LocalForward;
+    this.connection = null;
+
+    const results = args.LocalForward.match(/(\d+) (\S+):(\d+)/i);
+    if (!results) {
+      throw new Error(
+        `Error parsing LocalForward parameter '${args.LocalForward}'`,
+      );
+    }
+  }
+
+  public connect() {
+    const results = this.LocalForward.match(/(\d+) (\S+):(\d+)/i);
+    if (!results) {
+      throw new Error(
+        `Error parsing LocalForward parameter '${this.LocalForward}'`,
+      );
+    }
+
+    const [, port, host, hostPort] = results;
+
+    debug(`Running: ssh -N -L ${port}:${host}:${hostPort} ${this.HostName}`);
+    const child = spawn(
+      "ssh",
+      ["-N", "-L", `${port}:${host}:${hostPort}`, this.HostName],
+      {},
+    );
+
+    child.on("exit", () => {
+      debug(`Child process ${child.pid} exited`);
+    });
+  }
+
+  public disconnect() {
+    const results = this.LocalForward.match(/(\d+) (\S+):(\d+)/i);
+    if (!results) {
+      throw new Error(
+        `Error parsing LocalForward parameter '${this.LocalForward}'`,
+      );
+    }
+    const [, port, host, hostPort] = results;
+
+    debug(`Killing process by lookup`);
+    ps.lookup(
+      {
+        command: "ssh",
+        arguments: ["-N", "-L", `${port}:${host}:${hostPort}`, this.HostName],
+      },
+      function(
+        err: string,
+        resultList: Array<{
+          pid: string;
+          command: string;
+          arguments: string;
+        }>,
+      ) {
+        if (err) {
+          throw new Error(err);
+        }
+
+        resultList.forEach(function(process) {
+          if (process) {
+            ps.kill(process.pid, function(err: string) {
+              if (err) {
+                throw new Error(err);
+              }
+              debug(`Process ${process.pid} has been killed!`);
+            });
+          }
+        });
+      },
+    );
+  }
+}
+
+//@ts-ignore
+interface ITunnel {
+  Host: string;
+  HostName: string;
+  User: string;
+  Port: string;
+  LocalForward: string;
+  IdentityFile: string;
 }

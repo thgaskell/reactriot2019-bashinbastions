@@ -6,23 +6,20 @@ const USER_HOME_SSH_CONFIG_FILEPATH = "~/.ssh/config";
 
 export const Init: React.FunctionComponent = () => {
   const [isLoading, setLoading] = React.useState(true);
-  const [config, setConfig] = React.useState<SshConfig>();
   const [error, setError] = React.useState<Error | null>(null);
+  const [config, setConfig] = React.useState(new SshConfig());
 
   React.useEffect(() => {
     async function initConfig() {
-      if (!config) {
-        SshConfig.init()
-          .then(async config => {
-            await config.import(USER_HOME_SSH_CONFIG_FILEPATH);
-            setLoading(false);
-            setConfig(config);
-          })
-          .catch(err => {
-            setLoading(false);
-            setError(err);
-            process.exit(1);
-          });
+      try {
+        await SshConfig.import(config, USER_HOME_SSH_CONFIG_FILEPATH);
+
+        setConfig(config);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        setError(err);
+        process.exit(1);
       }
     }
     initConfig();
@@ -37,7 +34,7 @@ export const Init: React.FunctionComponent = () => {
         </Box>
       )}
 
-      {config && (
+      {!isLoading && (
         <React.Fragment>
           <Box>
             Initialized <Color yellow>{config.filepath}</Color>
