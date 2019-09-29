@@ -7,7 +7,7 @@ export const Show: React.FunctionComponent = () => {
   const { input } = useAppContext();
   const [, host] = input;
   const hosts = useHosts();
-  const data = hosts.find(h => h.host === host);
+  const data = hosts.find(h => h.Host === host);
 
   return (
     <Box flexDirection="column">
@@ -16,24 +16,24 @@ export const Show: React.FunctionComponent = () => {
         <React.Fragment>
           <Box>
             <Color bold green>
-              {data.host}
+              {data.Host}
             </Color>
           </Box>
           <Box marginLeft={2} flexDirection="column">
             <Box>
-              <Color gray>Hostname:</Color> {data.hostname}
+              <Color gray>HostName:</Color> {data.HostName}
             </Box>
             <Box>
-              <Color gray>User:</Color> {data.user}
+              <Color gray>User:</Color> {data.User}
             </Box>
             <Box>
-              <Color gray>Port:</Color> {data.port}
+              <Color gray>Port:</Color> {data.Port}
             </Box>
             <Box>
-              <Color gray>ForwardAgent:</Color> {data.forwardAgent}
+              <Color gray>ForwardAgent:</Color> {data.ForwardAgent}
             </Box>
             <Box>
-              <Color gray>IdentityFile:</Color> {data.identityFile}
+              <Color gray>IdentityFile:</Color> {data.IdentityFile}
             </Box>
           </Box>
         </React.Fragment>

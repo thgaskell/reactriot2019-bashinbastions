@@ -10,7 +10,7 @@ const { mkdir, readFile, writeFile } = promises;
 export async function readConfigurationFile(
   filepath: string = path.resolve(
     os.homedir(),
-    ".bashnbastions-react-riot-2019/config",
+    ".bashnbastions-react-riot-2019/.ssh/config",
   ),
 ) {
   const absoluteFilePath = path.resolve(filepath);
@@ -23,7 +23,7 @@ export async function writeConfigurationFile(
   contents = "",
   filepath: string = path.resolve(
     os.homedir(),
-    ".bashnbastions-react-riot-2019/config",
+    ".bashnbastions-react-riot-2019/.ssh/config",
   ),
 ) {
   const absoluteFilePath = path.resolve(filepath);

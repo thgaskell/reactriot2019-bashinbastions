@@ -8,11 +8,11 @@ export const List: React.FunctionComponent = () => {
   return (
     <Box flexDirection="column">
       {hosts.map(host => (
-        <React.Fragment key={host.hostname}>
+        <React.Fragment key={host.HostName}>
           <Box>
             -{" "}
             <Color bold green>
-              {host.host}
+              {host.Host}
             </Color>
           </Box>
         </React.Fragment>
