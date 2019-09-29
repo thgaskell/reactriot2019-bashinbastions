@@ -9,9 +9,9 @@ export const Init: React.FunctionComponent = () => {
   const [config, setConfig] = React.useState<SshConfig>();
   const [error, setError] = React.useState<Error | null>(null);
 
+  // TODO: Fix this. It's triggering twice.
   if (!isLoading && !config) {
     setLoading(true);
-
     SshConfig.init()
       .then(async config => {
         await config.import(USER_HOME_SSH_CONFIG_FILEPATH);
