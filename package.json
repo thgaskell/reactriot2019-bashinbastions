@@ -1,7 +1,7 @@
 {
   "name": "rssh",
   "version": "1.0.0",
-  "description": "SSH config manager",
+  "description": "Manage your SSH configs with a CLI interface.",
   "main": "dist/index.js",
   "module": "dist/rssh.esm.js",
   "typings": "dist/index.d.ts",
