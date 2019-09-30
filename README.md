@@ -2,6 +2,10 @@
   <h1>reactriot2019-bashinbastions 🥊</h1>
 </div>
 
+<p align="center">
+  <strong>SSH config manager</strong>
+</p>
+
 ## Quick Start
 
 ### Clone this repo
@@ -27,7 +31,7 @@ $ yarn dev
 
 ### Run CLI
 
-Run [`cli.js`](./cli.js) which will use files from `dist`.  
+Run [`cli.js`](./cli.js) which will use files from `dist`.
 
 ```bash
 $ yarn start
