@@ -1,15 +1,16 @@
 {
-  "name": "bashinbastions",
-  "version": "0.1.0",
+  "name": "rssh",
+  "version": "1.0.0",
+  "description": "SSH config manager",
   "main": "dist/index.js",
-  "module": "dist/bashinbastions.esm.js",
+  "module": "dist/rssh.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "cli.js"
   ],
   "bin": {
-    "bashinbastions": "./cli.js"
+    "rssh": "./cli.js"
   },
   "scripts": {
     "start": "node cli",
