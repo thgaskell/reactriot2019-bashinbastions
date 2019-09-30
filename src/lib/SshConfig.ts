@@ -302,44 +302,55 @@ class Tunnel {
   }
 
   public disconnect() {
-    const results = this.LocalForward.match(/(\d+) (\S+):(\d+)/i);
-    if (!results) {
-      throw new Error(
-        `Error parsing LocalForward parameter '${this.LocalForward}'`,
-      );
-    }
-    const [, port, host, hostPort] = results;
+    return new Promise((resolve, reject) => {
+      const results = this.LocalForward.match(/(\d+) (\S+):(\d+)/i);
+      if (!results) {
+        return reject(
+          new Error(
+            `Error parsing LocalForward parameter '${this.LocalForward}'`,
+          ),
+        );
+      }
+      // const [, port, host, hostPort] = results;
 
-    debug(`Killing process by lookup`);
-    ps.lookup(
-      {
-        command: "ssh",
-        arguments: ["-N", "-L", `${port}:${host}:${hostPort}`, this.HostName],
-      },
-      function(
-        err: string,
-        resultList: Array<{
-          pid: string;
-          command: string;
-          arguments: string;
-        }>,
-      ) {
-        if (err) {
-          throw new Error(err);
-        }
-
-        resultList.forEach(function(process) {
-          if (process) {
-            ps.kill(process.pid, function(err: string) {
-              if (err) {
-                throw new Error(err);
-              }
-              debug(`Process ${process.pid} has been killed!`);
-            });
+      debug(`Killing process by lookup`);
+      ps.lookup(
+        {
+          command: "ssh",
+          arguments: ["-F", SshConfig.CLI_SSH_CONFIG_FILEPATH, "-N", this.Host],
+        },
+        function(
+          err: string,
+          resultList: Array<{
+            pid: string;
+            command: string;
+            arguments: string;
+          }>,
+        ) {
+          if (err) {
+            return reject(new Error(err));
           }
-        });
-      },
-    );
+
+          Promise.all(
+            resultList.map(function(process) {
+              return new Promise((resolve, reject) => {
+                if (process) {
+                  ps.kill(process.pid, function(err: string) {
+                    if (err) {
+                      return reject(new Error(err));
+                    }
+                    debug(`Process ${process.pid} has been killed!`);
+                    resolve();
+                  });
+                }
+              });
+            }),
+          )
+            .then(resolve)
+            .catch(reject);
+        },
+      );
+    });
   }
 }
 

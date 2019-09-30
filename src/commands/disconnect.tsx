@@ -7,10 +7,12 @@ export const Disconnect: React.FunctionComponent = () => {
   //@ts-ignore
   const { config, isLoading, error } = useConfiguration();
 
-  const hosts = config.getHosts();
-  const items = hosts.map(({ Host }) => ({
-    label: Host,
-    value: Host,
+  const tunnels = config.getTunnels();
+
+  const items = tunnels.map(tunnel => ({
+    label: tunnel.Host,
+    value: tunnel.Host,
+    tunnel: tunnel,
   }));
 
   if (!items.length) return null;
@@ -18,12 +20,14 @@ export const Disconnect: React.FunctionComponent = () => {
   return (
     <Box flexDirection="column">
       <Box>
-        <Text bold>Close Host connection:</Text>
+        <Text bold>Close connection:</Text>
       </Box>
       <SelectInput
         items={items}
-        onSelect={item => {
-          console.log("Connect -> item", item);
+        onSelect={async (item: any) => {
+          const { tunnel } = item;
+
+          await tunnel.disconnect();
           process.exit(0);
         }}
       />
