@@ -26,11 +26,11 @@ Although it's a hackathon, we didn't want to be responsible for nuking your SSH 
 
 - Since it _is_ a hackathon we didn't have time to implement editing the config file through the CLI.
 - If you make a mistake, you can blow your changes away by re-initializing the project (`rssh init`).
-- If you don't want to remove everything you can edit the SSH config directly which is located at `~/.bashnbastions-react-riot-2019/.ssh/config`.
+- If you don't want to remove everything you can edit the SSH config directly which is located at `~/.rssh/.ssh/config`.
 - If you see `cli` referenced in the output that _actually_ means `rssh`.
 - 🧹 This tunnel **will** run in the background until you disconnect them! Use `rssh disconnect` to close tunnels!
 - If you are setting up a tunnel you've never configured before you may need to accept the fingerprint outside of the application:
-  - `ssh -F ~/.bashnbastions-react-riot-2019/.ssh/config <tunnel-host>`
+  - `ssh -F ~/.rssh/.ssh/config <tunnel-host>`
 - If you want to see all the debugger logs you can enable it with an environment flag (`DEBUG=* rssh <command>`)
 
 ## Future improvements

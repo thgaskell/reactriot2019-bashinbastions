@@ -17,13 +17,10 @@ export default class SshConfig {
     ".ssh",
     "config",
   );
-  static DEFAULT_CLI_DIRECTORY = path.resolve(
-    os.homedir(),
-    ".bashnbastions-react-riot-2019",
-  );
+  static DEFAULT_CLI_DIRECTORY = path.resolve(os.homedir(), ".rssh");
   static CLI_SSH_CONFIG_FILEPATH = path.resolve(
     os.homedir(),
-    ".bashnbastions-react-riot-2019",
+    ".rssh",
     ".ssh",
     "config",
   );
