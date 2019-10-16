@@ -7,10 +7,7 @@ const SSHConfig = require("ssh-config");
 const { mkdir, readFile, writeFile } = require("mz/fs");
 
 export async function readConfigurationFile(
-  filepath: string = path.resolve(
-    os.homedir(),
-    ".bashnbastions-react-riot-2019/.ssh/config",
-  ),
+  filepath: string = path.resolve(os.homedir(), ".rssh/.ssh/config"),
 ) {
   const absoluteFilePath = path.resolve(filepath);
   debug(`Reading ssh config file: ${absoluteFilePath}`);
@@ -20,10 +17,7 @@ export async function readConfigurationFile(
 
 export async function writeConfigurationFile(
   contents = "",
-  filepath: string = path.resolve(
-    os.homedir(),
-    ".bashnbastions-react-riot-2019/.ssh/config",
-  ),
+  filepath: string = path.resolve(os.homedir(), ".rssh/.ssh/config"),
 ) {
   const absoluteFilePath = path.resolve(filepath);
   const directoryPath = path.dirname(absoluteFilePath);

@@ -39,7 +39,7 @@ export const Init: React.FunctionComponent = () => {
       {!isLoading && (
         <React.Fragment>
           <Box>
-            Initialized <Color yellow>{config.filepath}</Color>
+            Initialized <Color yellow>~/.ssh/config</Color>
           </Box>
           <Box>
             <Color green>Setup complete!</Color>

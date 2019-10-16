@@ -64,9 +64,9 @@ describe("SSH Config", () => {
         "does-not-exist",
       );
 
-      expect(config.import(INVALID_IMPORT_TARGET)).rejects.toThrow();
+      expect(SshConfig.import(config, INVALID_IMPORT_TARGET)).rejects.toThrow();
 
-      await config.import(TEST_CONFIG_FILEPATH);
+      await SshConfig.import(config, TEST_CONFIG_FILEPATH);
 
       const [from, to] = await Promise.all([
         readFile(TEST_CONFIG_FILEPATH, "utf8"),
@@ -78,7 +78,7 @@ describe("SSH Config", () => {
       // Test backup functionality
       const modification = `# Modified at ${new Date().toISOString()}`;
       await appendFile(config.filepath, modification);
-      await config.import(TEST_CONFIG_FILEPATH);
+      await SshConfig.import(config, TEST_CONFIG_FILEPATH);
 
       const files = await readdir(path.dirname(config.filepath));
       expect(files).toHaveLength(2);
