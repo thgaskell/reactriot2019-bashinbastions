@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>reactriot2019-bashinbastions 🥊</h1>
+  <h1>rssh 🥊</h1>
 </div>
 
 <p align="center">
@@ -144,7 +144,7 @@ Similar to the previous command, except this will close the tunnel.
 ### Clone this repo
 
 ```bash
-$ git clone https://github.com/Hackbit/reactriot2019-bashinbastions.git
+$ git clone https://github.com/thgaskell/rssh-cli.git
 $ cd reactriot2019-bashinbastions
 ```
 
