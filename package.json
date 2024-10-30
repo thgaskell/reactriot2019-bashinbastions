@@ -52,10 +52,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Hackbit/reactriot2019-bashinbastions.git"
+    "url": "https://github.com/thgaskell/rssh-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/Hackbit/reactriot2019-bashinbastions/issues"
+    "url": "https://github.com/thgaskell/rssh-cli/issues"
   },
   "husky": {
     "hooks": {
